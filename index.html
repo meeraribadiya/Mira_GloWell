@@ -1676,6 +1676,55 @@
 
   <script>
     (function() {
+      // Mobile Navbar Toggle
+      const nav = document.querySelector('nav');
+      const navToggle = document.querySelector('.nav-toggle');
+      const navList = document.querySelector('nav ul');
+
+      // Keep the fixed dropdown positioned right below the current nav height
+      function setNavHeightVar() {
+        if (!nav) return;
+        const h = Math.round(nav.getBoundingClientRect().height);
+        nav.style.setProperty('--nav-h', h + 'px');
+      }
+      setNavHeightVar();
+      window.addEventListener('resize', setNavHeightVar, { passive: true });
+
+      // Toggle open/close on hamburger
+      if (navToggle && nav) {
+        navToggle.addEventListener('click', () => {
+          const isOpen = nav.classList.toggle('open');
+          navToggle.setAttribute('aria-expanded', String(isOpen));
+          setNavHeightVar();
+        });
+      }
+
+      // Close when a menu link is clicked (useful on mobile)
+      if (navList && nav && navToggle) {
+        navList.querySelectorAll('a').forEach(a => {
+          a.addEventListener('click', () => {
+            nav.classList.remove('open');
+            navToggle.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+
+      // Close menu on Escape key
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && nav && navToggle && nav.classList.contains('open')) {
+          nav.classList.remove('open');
+          navToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // If viewport grows beyond mobile breakpoint, ensure menu is closed
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 900 && nav && navToggle) {
+          nav.classList.remove('open');
+          navToggle.setAttribute('aria-expanded', 'false');
+        }
+      }, { passive: true });
+
       const listKey = 'meera_reviews_v1';
       const form = document.getElementById('review-form');
       const userList = document.getElementById('user-reviews');
